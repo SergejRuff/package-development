@@ -1,0 +1,125 @@
+Flavor: r-devel-windows-x86_64
+Check: CRAN incoming feasibility, Result: NA
+  Maintainer: 'Klaus Jung <klaus.jung@tiho-hannover.de>'
+  
+  New submission
+  
+  Package was archived on CRAN
+  
+  CRAN repository db overrides:
+    X-CRAN-Comment: Archived on 2022-05-24 as email to the maintainer is
+      undeliverable.
+  
+  Found the following (possibly) invalid URLs:
+    URL: https://www.jstor.org/stable/2684460
+      From: man/rho_bounds.Rd
+            man/rmvbinary_EP.Rd
+      Status: 403
+      Message: Forbidden
+    URL: https://www.jstor.org/stable/30042053
+      From: man/rmvbinary_QA.Rd
+      Status: 403
+      Message: Forbidden
+    URL: https://www.tandfonline.com/doi/abs/10.1080/00031305.1999.10474494
+      From: man/bag.Rd
+            man/gem.Rd
+            man/loop.Rd
+      Status: 403
+      Message: Forbidden
+  
+  Found the following URLs which should use \doi (with the DOI name only):
+    File 'GA_diagplot.Rd':
+      https://doi.org/10.1016/j.compbiomed.2017.10.023
+    File 'GlobTestMissing.Rd':
+      https://doi.org/10.1093/bioinformatics/btu062
+    File 'RHighDim.Rd':
+      https://doi.org/10.1093/bioinformatics/btr152
+    File 'iter_matrix.Rd':
+      https://doi.org/10.1016/j.compbiomed.2017.10.023
+    File 'sequence_probs.Rd':
+      https://doi.org/10.1016/j.compbiomed.2017.10.023
+    File 'start_matrix.Rd':
+      https://doi.org/10.1016/j.compbiomed.2017.10.023
+    File 'summary_RHD.Rd':
+      https://doi.org/10.1093/bioinformatics/btr152
+
+Flavor: r-devel-windows-x86_64
+Check: DESCRIPTION meta-information, Result: NA
+  Author field differs from that derived from Authors@R
+    Author:    'Klaus Jung,Jochen Kruppa, Sergej Ruff'
+    Authors@R: 'Klaus Jung [aut, cre], Jochen Kruppa [aut], Sergej Ruff [aut]'
+
+Flavor: r-devel-windows-x86_64
+Check: examples, Result: NA
+  Examples with CPU (user + system) or elapsed time > 10s
+            user system elapsed
+  gem     433.18 186.54  619.82
+  bag      27.39   0.52   28.14
+  loop     25.14   0.27   25.41
+  depmed   20.25   0.09   20.35
+  hldepth  18.47   0.06   18.53
+
+Flavor: r-devel-windows-x86_64
+Check: Overall checktime, Result: NOTE
+  Overall checktime 13 min > 10 min
+
+Flavor: r-devel-linux-x86_64-debian-gcc
+Check: CRAN incoming feasibility, Result: NOTE
+  Maintainer: 'Klaus Jung <klaus.jung@tiho-hannover.de>'
+  
+  New submission
+  
+  Package was archived on CRAN
+  
+  CRAN repository db overrides:
+    X-CRAN-Comment: Archived on 2022-05-24 as email to the maintainer is
+      undeliverable.
+  
+  Found the following (possibly) invalid URLs:
+    URL: https://www.jstor.org/stable/2684460
+      From: man/rho_bounds.Rd
+            man/rmvbinary_EP.Rd
+      Status: 403
+      Message: Forbidden
+    URL: https://www.jstor.org/stable/30042053
+      From: man/rmvbinary_QA.Rd
+      Status: 403
+      Message: Forbidden
+    URL: https://www.tandfonline.com/doi/abs/10.1080/00031305.1999.10474494
+      From: man/bag.Rd
+            man/gem.Rd
+            man/loop.Rd
+      Status: 403
+      Message: Forbidden
+  
+  Found the following URLs which should use \doi (with the DOI name only):
+    File 'GA_diagplot.Rd':
+      https://doi.org/10.1016/j.compbiomed.2017.10.023
+    File 'GlobTestMissing.Rd':
+      https://doi.org/10.1093/bioinformatics/btu062
+    File 'RHighDim.Rd':
+      https://doi.org/10.1093/bioinformatics/btr152
+    File 'iter_matrix.Rd':
+      https://doi.org/10.1016/j.compbiomed.2017.10.023
+    File 'sequence_probs.Rd':
+      https://doi.org/10.1016/j.compbiomed.2017.10.023
+    File 'start_matrix.Rd':
+      https://doi.org/10.1016/j.compbiomed.2017.10.023
+    File 'summary_RHD.Rd':
+      https://doi.org/10.1093/bioinformatics/btr152
+
+Flavor: r-devel-linux-x86_64-debian-gcc
+Check: DESCRIPTION meta-information, Result: NOTE
+  Author field differs from that derived from Authors@R
+    Author:    'Klaus Jung,Jochen Kruppa, Sergej Ruff'
+    Authors@R: 'Klaus Jung [aut, cre], Jochen Kruppa [aut], Sergej Ruff [aut]'
+
+Flavor: r-devel-linux-x86_64-debian-gcc
+Check: examples, Result: NOTE
+  Examples with CPU (user + system) or elapsed time > 5s
+             user system elapsed
+  gem     377.888 18.633 394.590
+  loop     22.062  0.774  20.027
+  bag      17.806  0.354  17.277
+  depmed   11.559  0.006  11.565
+  hldepth  11.492  0.000  11.499

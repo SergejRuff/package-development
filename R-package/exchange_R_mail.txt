@@ -1,0 +1,328 @@
+> The Check-Function in R shows no Notes, Warnings or Errors, but I am
+> not sure if that means that limma will install when installing my
+> package from CRAN.
+
+> Currently I am declaring limma like this:
+>
+> Suggests:
+>
+>     limma
+
+install.packages() doesn't install suggested packages by default: the
+`dependencies` argument defaults to NA, which means c("Depends",
+"Imports", "LinkingTo"), which doesn't include 'Suggests'.
+
+What if you pass dependencies = TRUE? Given the fact that Bioconductor
+is absent from getOption('repos') by default, the package will still
+not be installed. BiocManager::install() is the supported way to
+install packages from Bioconductor:
+https://cran.r-project.org/package=BiocManager/vignettes/BiocManager.html#installing-bioconductor-cran-or-github-packages
+
+I think that BiocManager::install('YOUR_PACKAGE', dependencies = TRUE)
+will install both your package and limma. It's a bit hard to verify
+because your package should live in a repository, but if you'd like to
+be sure, spin up a drat <https://CRAN.R-project.org/package=drat> repo
+on a local server and add it to options(repos = ...) before trying to
+install your package.
+
+> Do I need to declare Bioconductor-dependencies such as Limma
+> differently in the Description-File of my Package?
+ 
+No, this is the right way to declare Bioconductor dependencies for CRAN
+packages.
+
+> Can CRAN identify that limma is a Bioconductor-Package and will it
+> Limma install, when installing my package from CRAN?
+
+The CRAN website will detect the Bioconductor dependency and highlight
+it with a different colour, making it a link to the Bioconductor
+website. See, e.g., the BiocManager package and its reverse
+dependencies: https://CRAN.R-project.org/package=BiocManager
+
+--
+Best regards,
+Ivan
+
+--------------------------------------------------------------------------------------------------------------------------
+
+Hi,
+My package pliman depends on EBImage which is in Bioconductor. I have created a function check_ebi() <https://github.com/TiagoOlivoto/pliman/blob/e6efc4b6a2396600939e308c235aeb9ab47af375/R/utilities.R#L534> that is called in .onAttach() <https://github.com/TiagoOlivoto/pliman/blob/master/R/zzz.R#L36>  and checks if EBImage is installed. If not, the function asks the user to install it. Both EBImage and BiocManager are listed as suggests <https://github.com/TiagoOlivoto/pliman/blob/master/DESCRIPTION#L22>
+
+I believe that this could be a possible solution 
+Best regards,
+Olivoto
+
+---------------------------------------------------------------------------------------------------------------------------
+
+If some other package loads but doesn't attach pliman, and is missing
+EBImage, does it fail gracefully?  That's also important.  I'd test what
+happens if a user runs pliman::object_edge( ... ) .  (That function
+isn't in the CRAN version, just the Github version, so I haven't tried
+this.)
+
+Duncan Murdoch
+
+-----------------------------------------------------------------------------------------------------------------------
+
+I sincerely don't know if the position of biocView really matters (I'll try it when preparing for the new CRAN release of pliman). I believe that biocView will not allow you to put limma in the imports field and automatically install it from Bioconductor, as you can see here in this discussion <https://stackoverflow.com/questions/54411495/bioconductor-packages-not-installing-with-biocviews-specification-in-description>
+
+In my case, I had no errors when submitting pliman to CRAN using EBImage as suggests (I haven't yet tried to use biocView: and EBImage in the Imports section).
+
+Best regards,
+
+-------------------------------------------------------------------------------------------------------------------------
+
+> Last question: How does CRAN work with Bioconductor Dependencies?
+> Will CRAN accept limma as a dependency or will my submission be
+> rejected?
+
+It's not explicitly spelled out in the CRAN policy
+<https://cran.r-project.org/web/packages/policies.html>, but
+Bioconductor and CRAN are the "mainstream repositories" for the
+purposes of the following rule:
+
+>> Packages on which a CRAN package depends should be available from a
+>> mainstream repository
+
+(Even non-mainstream repositories are allowed for optional dependencies
+if you follow a few additional rules.)
+
+Here's an example of a CRAN package with a strong dependency on a
+Bioconductor package: <https://CRAN.R-project.org/package=RTIGER>. You
+can see the extra instructions for installing the Bioconductor
+dependencies in its README.
+
+--
+Best regards,
+Ivan
+--------------------------------------------------------------------------------------------------------------------------------------
+
+I would not follow the instructions in RTIGER’s README for installing Bioconductor packages.
+ 
+BiocManager::install(“RTIGER”) would install both CRAN and Bioconductor dependencies of RTIGER, and would be my preferred instruction in a README or INSTALL file. A complete instruction might be to install your package as if it were on Bioconductor –
+ 
+If (!requireNamepace(“BiocManager”, quietly = TRUE))
+    install.packages(“BiocManager”)
+BiocManager::install(“<your package>”)
+ 
+It does not make sense to me to have instructions in .onAttach / .onLoad or in each function for the user to install a ‘Suggests:’ package, when actually the package is required for use and belongs in Imports: or perhaps Depends:.
+ 
+The instruction to use ‘version = “3.14”’ of Bioconductor in the RTIGER document is not universally correct, since different Bioconductor versions are tied to specific R versions (see https://bioconductor.org/about/release-announcements/ ). On one version of R I am currently using, I get
+ 
+> BiocManager::install(version = "3.14")
+Error: Bioconductor version '3.14' requires R version '4.1'; use
+  `BiocManager::install(version = '3.17')` with R version 4.3; see
+  https://bioconductor.org/install
+ 
+The instruction to install a vector of Bioconductor packages is also unnecessary for Bioconductor packages in the Imports: or Depends: field of <your package>, or if one were to pass the argument `dependencies = TRUE` to either BiocManager::install() or install.packages() (to get the Suggests: packages of <your package> to be installed, as well as Depends:, Imports: and LinkingTo:).
+ 
+Briefly, installation requires R to know the correct repositories. The command
+ 
+BiocManager::repositories()
+ 
+Returns a vector of Bioconductor and CRAN repositories relevant to your version of R. If one is averse to using BiocManager::install(“RTIGER”), a reasonable alternative, though still requiring that the BiocManager package is installed, is
+ 
+install.packages(“RTIGER”, repos = BiocManager::repositories())
+ 
+Base R also provides a mechanism for specifying Bioconductor repositories, via `setRepositories()` called before install.packages(). However, this is not recommended because, as can be seen on the web page mentioned above, there are two versions of Bioconductor for each version of R – one always gets the ‘old’ Bioconductor version, even when a newer version is available.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+If you have it in the Suggests list you should have written your code to
+work (i.e. not trigger an error) whether it is installed or not, so you
+shouldn't worry about it.
+
+Duncan Murdoch
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+> Thats the source of my worries. Will the same error appear when CRAN
+> checks the examples of my package? Or should I not be worried?
+
+Yes, part of CRAN checks is running your package without the packages
+listed under Suggests:
+https://www.stats.ox.ac.uk/pub/bdr/noSuggests/README.txt [*]
+
+See WRE 1.1.3.1 for the official guidance on how to handle optional
+dependencies that might not be installed:
+https://cran.r-project.org/doc/manuals/R-exts.html#Suggested-packages
+
+In short, your code should check the return value of
+requireNamespace('limma', quietly = TRUE) before trying to run code
+from it. Your code can (and probably should) raise an error if asked to
+do something using limma when it's not available, but then in your
+tests/vignettes/examples you should check whether limma is available
+before trying to run that code.
+
+--
+Best regards,
+Ivan
+
+-------------------------------------------------------------------------------------------------------------------------
+
+> I would like to ask, if I need to add something to the
+> DESCRIPTION-file when declaring Bioconductor dependencies for CRAn
+> Submission.
+
+Strictly speaking, no. Once you list limma under Suggests, it's
+possible and proper to install your package using
+BiocManager::install('YOUR_PACKAGE', dependencies = TRUE) and have
+limma installed too, as Martin Morgan said above in the thread.
+
+> Some recommend adding biocViews:
+
+This field is required on Bioconductor, not CRAN:
+https://contributions.bioconductor.org/description.html?q=biocViews#description-biocviews
+
+> some recommend adding Remotes: bioc::limma
+
+Not a standard R/CRAN field, only used by the remotes package:
+https://remotes.r-lib.org/articles/dependencies.html
+
+> Others add Biocmanager to the suggests file
+
+I suppose it could help a user who doesn't initially know to use
+BiocManager in order to install your package, and could also be used to
+install limma on behalf of your users (with their permission!), but
+it's additional work, may be hard to get right (see the CRAN policy
+about installing packages and touching user files), and is not required
+at all.
+
+> What should I add to my Description File to make sure that limma gets
+> installed from Bioconductor when needed?
+
+See Martin Morgan's e-mail above in the thread. In short, tell your
+users to install your package using BiocManager::install(...,
+dependencies = TRUE) if they want limma to work. They are still free to
+install.packages() if they don't want limma or can set things up
+themselves.
+
+Move limma to Imports (better) or Depends (may be worse)
+if you want limma to be always available, at the cost of always
+requiring Bioconductor to be set up to have your package installed.
+There are other ways besides BiocManager::install(), but they all
+depend on the user having set up Bioconductor repos in their R session
+somehow, be it BiocManager::repositories() or setRepositories().
+
+--
+Best regards,
+Ivan
+
+------------------------------------------------------------------------------------------------------------------------------
+
+> Thanks,
+>
+>
+> I thought about changing it to "Imports", but will it cause any issues when CRAN runs checks on my package and limma isn´t available on CRAN?
+
+No, BioC is a mainstream repository.
+
+Best,
+Uwe Ligges
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Packages can only be installed from the repositories listed and only CRAN is the default so only CRAN package are guaranteed to work. I'd like to add that the issue below is exactly why, personally, I would not recommend using Bioconductor package as strong dependency (imports/depends), because that makes the package unusable for most users, as it cannot be installed (without extra steps they don't know about) since the dependency doesn't exist on CRAN.
+
+If your users are already Bioconductor users by the virtue of the package application then they already know so it's fine, but then you are probably better off to have your package on Bioconductor as part of the ecosystem which is much more streamlined and coordinated.
+
+If it is only suggested (weak dependency) for some optional functionality, then your package will work even if the dependency is not installed so all is well. And if the optional Bioconductor functionality is used you can direct the user to instructions explaining that Bioconductor is required for that - but the package has to do that, it is not anything automatic in R.
+
+Cheers,
+Simon
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+> When Limma is üre-installed, I get the following Note:
+>
+>
+> "Package suggested but not available for checking: 'limma'".
+>
+>
+> Seems like the functions isnt installing limma.
+>
+> Is there something I am missing?
+
+No, this is exactly how it's supposed to behave under R CMD check. The
+CRAN policy forbids packages to install other packages ("Packages
+should not write in the user’s home filespace <...> nor anywhere else
+on the file system") except when the user gives permission to do so
+("Limited exceptions may be allowed in interactive sessions if the
+package obtains confirmation from the user").
+
+Under R CMD check, interactive() is FALSE because there is no user to
+ask permission from, so the function correctly decides not to install
+the package. The resulting NOTE is the expected result here. The
+important part is that your example doesn't crash because it's unable
+to load the limma namespace.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+> but I thought Notes will also cause rejection when submitting a
+> package to CRAN. Won´t that be a problem?
+
+True, a NOTE during an automatic check may cause a rejection, but you
+won't get this NOTE there. Automatic CRAN pre-tests are done with a
+full package set: anything from CRAN and BioConductor that runs on a
+given operating system can be loaded.
+
+(This differentiates CRAN from, say, PyPI or NPM: the two latter
+ecosystems are much larger and are expected to handle conflicting
+dependency requirements. CRAN is small enough to be able to enforce the
+rule that every package must play well with the latest version of
+everything else.)
+
+There's an additional CRAN check called noSuggests
+<https://www.stats.ox.ac.uk/pub/bdr/noSuggests/README.txt>. You will
+get a NOTE there, but it's expected and won't count against you. The
+only way avoid this NOTE there is to not have any packages in Suggests:
+(or Enhances:).
+
+--
+Best regards,
+Ivan
+
+------------------------------------------------------------------------------------------------------------------------------
+
+> The problem is that a local installation of my package (via USB-stick
+> for example) can´t install the dependencies from CRAN.
+>
+> The package works perfectly fine, if the dependencies are
+> preinstalled.
+
+This is a similar, but different problem. It is indeed solved by having
+your package with its dependencies in a repository.
+
+> So I thought all dependencies would install automatically from CRAN?
+
+The user is allowed to install your package with dependencies = NA
+(which means not installing packages listed under Suggests). The
+Depends, Imports and LinkingTo will be installed, but not Suggests. The
+user will have to pass dependencies = TRUE in order to install the
+packages listed under Suggests.
+
+Your package is required to work (in particular, run the examples and
+vignettes and pass the tests without errors) without having the
+suggested packages installed:
+<https://cran.r-project.org/doc/manuals/R-exts.html#Suggested-packages>.
+You can check whether limma can be loaded and raise an error otherwise,
+but your tests, examples and vignettes shouldn't raise errors or
+otherwise crash. This is checked by CRAN here:
+https://www.stats.ox.ac.uk/pub/bdr/noSuggests/README.txt
+
+If your package can't be meaningfully used without limma, do list it as
+a strong dependency.
+
+--
+Best regards,
+Ivan
+
+-------------------------------------------------------------------------------------------------------------
+
+The user should set the CRAN+BioC via setRepositories() and then run
+install.packages() will install all dependencies automatically.
+Of course, if you install from a local repository without the required
+packages or from a USB drive, R cannot resolve dependencies.
+
+Best,
+Uwe Ligges
