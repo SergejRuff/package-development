@@ -35,9 +35,11 @@
             "id": "b3e1323ce1e9bdfd",
             "type": "leaf",
             "state": {
-              "type": "pdf",
+              "type": "markdown",
               "state": {
-                "file": "Rpackages with Bioconductor dependencies on Github.pdf"
+                "file": "notes/No global binding node with dplyr variables.md",
+                "mode": "source",
+                "source": false
               }
             }
           }
@@ -108,7 +110,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Rpackages with Bioconductor dependencies on Github.pdf",
+                "file": "notes/No global binding node with dplyr variables.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -125,7 +127,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Rpackages with Bioconductor dependencies on Github.pdf",
+                "file": "notes/No global binding node with dplyr variables.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -148,7 +150,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Rpackages with Bioconductor dependencies on Github.pdf"
+                "file": "notes/No global binding node with dplyr variables.md"
               }
             }
           }
@@ -171,8 +173,10 @@
   },
   "active": "b3e1323ce1e9bdfd",
   "lastOpenFiles": [
-    "notes/Github package with Bioconductor Dependencies plus when to use biocview.md",
+    "notes/titles never end with \".\" in DESCRITION.md",
+    "notes/No global binding node with dplyr variables.md",
     "Rpackages with Bioconductor dependencies on Github.pdf",
+    "notes/Github package with Bioconductor Dependencies plus when to use biocview.md",
     "notes/CRAN packages with Bioconductor dependencies.md",
     "attachments",
     "notes/CRAN Check time.md",
